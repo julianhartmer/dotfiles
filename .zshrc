@@ -24,9 +24,10 @@ zstyle ':vcs_info:*' enable git
 zstyle ':vcs_info:*' check-for-changes true
 zstyle ':vcs_info:*' unstagedstr '%F{#f1fa8c} ✗%f'
 zstyle ':vcs_info:*' stagedstr '%F{#f1fa8c} +%f'
-# %b: branch, %i: commit hash
-zstyle ':vcs_info:git:*' formats ' %F{#ff79c6}%b [%.7i]%f%u%c'
-zstyle ':vcs_info:git:*' actionformats ' %F{#ff79c6}%b|%a [%.7i]%f%u%c'
+zstyle ':vcs_info:*' max-exports 2
+# %b: branch, %i: 7-char hash
+zstyle ':vcs_info:git:*' formats ' %F{#ff79c6}%b [%i]%f%u%c'
+zstyle ':vcs_info:git:*' actionformats ' %F{#ff79c6}%b|%a [%i]%f%u%c'
 
 precmd() { 
     vcs_info 
