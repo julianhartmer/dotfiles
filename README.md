@@ -6,8 +6,15 @@ My personal configuration files for various tools and shells.
 
 This repository includes basic configurations for:
 - Bash (`.bashrc`, `.bash_profile`)
-- Zsh (`.zshrc`) - Features the Dracula theme.
-- Tmux (`.tmux.conf`) - Features Vim-style pane navigation (`h`, `j`, `k`, `l`) and the Dracula theme.
+- Zsh (`.zshrc`) - Features the Dracula theme and high-performance Git status.
+- Tmux (`.tmux.conf`) - Features Vim-style pane navigation (`h`, `j`, `k`, `l`), resizing (`H`, `J`, `K`, `L`), splitting (`v`, `x`), breaking/joining/swapping (`!`, `@`, `S`), closing (`q`), mouse resizing, and the Dracula theme.
+- Neovim (`nvim/`) - A modern Lua-based config with:
+    - **Dracula Theme**: Native Lua implementation.
+    - **Plugin Manager**: `lazy.nvim` for fast loading.
+    - **LSP**: Intelligent code completion and diagnostics (via Mason).
+    - **Syntax**: `nvim-treesitter` for advanced highlighting.
+    - **Navigation**: `Telescope` (fuzzy finder) and `Neo-tree` (explorer).
+    - **UI**: `Lualine` (status bar) and `Bufferline` (tabs).
 
 ## Aliases
 
@@ -18,6 +25,7 @@ The following aliases are included in both Bash and Zsh:
 - `t`: `tmux`
 - `ta`: `tmux attach`
 - `v`: `nvim`
+- `n`: `nvim`
 
 ## Installation
 

@@ -63,7 +63,23 @@ install_config_block "$DOTFILES_DIR/.bashrc" "$HOME/.bashrc" "Bash"
 # 3. Update .zshrc
 install_config_block "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc" "Zsh"
 
-# 4. Optional: Update .bash_profile (ensure it sources .bashrc)
+# 4. Install Neovim configuration
+echo "Installing Neovim configuration..."
+NVIM_SOURCE="$DOTFILES_DIR/nvim"
+NVIM_TARGET="$HOME/.config/nvim"
+
+mkdir -p "$HOME/.config"
+
+# Overwrite: Remove existing file or directory before linking
+if [ -e "$NVIM_TARGET" ] || [ -L "$NVIM_TARGET" ]; then
+    echo "Removing existing nvim configuration..."
+    rm -rf "$NVIM_TARGET"
+fi
+
+ln -s "$NVIM_SOURCE" "$NVIM_TARGET"
+echo "Successfully linked $NVIM_TARGET -> $NVIM_SOURCE"
+
+# 5. Optional: Update .bash_profile (ensure it sources .bashrc)
 # This is a one-liner, we can just ensure it exists
 if ! grep -q ".bashrc" "$HOME/.bash_profile" 2>/dev/null; then
     echo "Ensuring .bashrc is sourced in .bash_profile..."
