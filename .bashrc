@@ -24,7 +24,7 @@ get_git_info() {
   fi
 
   local git_string=" \[\033[38;2;255;121;198m\]$branch \[\033[38;2;189;147;249m\][$hash]\[\033[0m\]$tag"
-  echo -e "\[\033[48;2;40;42;54m\]${git_string}\[\033[38;2;241;250;140m\]$status_info \[\033[0m\]"
+  echo -e "\[\033[48;2;40;42;54m\]${git_string}\[\033[38;2;241;250;140m\]$status_info\[\033[0m\]"
 }
 
 # Function to resolve exit codes to meanings
@@ -54,18 +54,19 @@ set_ps1() {
   local git_info=$(get_git_info)
   # Strip ALL ANSI codes and \[ \] for length calculation
   local plain_git=$(echo -e "$git_info" | sed -E 's/\\\[//g; s/\\\]//g; s/\x1b\[[0-9;]*m//g')
+  local pipe_c="\[\033[38;2;98;114;164m\]"
   
   # --- Return Value ---
   local ret_val=""
   local plain_ret=""
   if [[ $exit_status -ne 0 ]]; then
     local meaning=$(get_error_meaning $exit_status)
-    ret_val=" \[\033[38;2;255;85;85m\][$exit_status: $meaning]\[\033[0m\]"
+    ret_val=" \[\033[38;2;255;85;85m\][$exit_status: $meaning]"
     plain_ret=" [$exit_status: $meaning]"
   fi
 
   # Calculate exact lengths to prevent line-wrapping bugs
-  local path_text="${PWD/#$HOME/~}"
+  local path_text="$(dirs)"
   local host_short="${HOSTNAME%%.*}"
   # Account for "╭ " (2 chars)
   local left_text="╭  ${path_text} ${USER}@${host_short}${plain_ret} "
@@ -80,12 +81,12 @@ set_ps1() {
   local line2_pad=$((cols - 2 - ${#prompt_char} - ${#plain_git}))
   local pad2=""
   [[ $line2_pad -gt 0 ]] && printf -v pad2 "%${line2_pad}s" " "
+  local normalcol="$(tput sgr0)"
 
-  local pipe_c="\[\033[38;2;98;114;164m\]"
-  local line1="${pipe_c}╭\[\033[0m\]\[\033[48;2;40;42;54m\] ${path_text} ${USER}@${host_short}${ret_val}${pad1}\[\033[38;2;139;233;253m\]$time_str \[\033[0m\]"
-  local line2="${pipe_c}╰\[\033[0m\] \[\033[38;2;80;250;123m\]\$ \[\033[0m\]${pad2}${git_info}"
+  local line1="${pipe_c}╭ \[\033[0m\]\[\033[48;2;40;42;54m\]${path_text} ${USER}@${host_short}${ret_val}${pad1}\[\033[38;2;139;233;253m\]$time_str \[\033[0m\]"
+  local line2="\[\033[0m\]${pad2}${git_info}\r${pipe_c}╰\[\033[0m\] \[\033[38;2;80;250;123m\]\$${normalcol} "
   
-  PS1="\n${line1}\n${line2} "
+  PS1="${line1}\n${line2}"
 }
 PROMPT_COMMAND=set_ps1
 
