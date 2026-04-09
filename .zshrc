@@ -20,16 +20,17 @@ get_git_info() {
     elif [[ $line == "# branch.oid "* ]]; then
       hash="${line:13:7}"
     elif [[ $line == "1 "* ]] || [[ $line == "2 "* ]]; then
-      status_m="%F{#f1fa8c} ✗%f"
+      status_m=" %F{#f1fa8c}✗%f"
     fi
   done <<< "$status_out"
 
   if [[ -n "$hash" ]]; then
     tag=$(git describe --tags --exact-match 2>/dev/null)
-    [[ -n "$tag" ]] && tag=" %F{#ff79c6}#$tag%f"
+    [[ -n "$tag" ]] && tag=" %F{#ff79c6}#$tag"
   fi
 
-  echo -n "%K{#282a36} %F{#ff79c6}$branch%f %F{#bd93f9}[$hash]%f$tag$status_m %k"
+  # Blocky git info with brackets
+  echo -n " %F{#6272a4}[%F{#ff79c6}$branch %F{#bd93f9}$hash$tag$status_m%F{#6272a4}]%f"
 }
 
 # Function to resolve exit codes to meanings
@@ -52,38 +53,58 @@ get_error_meaning() {
 set_prompt() {
     local exit_status=$?
     local git_info=$(get_git_info)
-    local time_str="%F{#8be9fd}%D{%H:%M:%S}%f"
+    local time_str="%D{%H:%M:%S}"
     local pipe_color="%F{#6272a4}"
-    
-    # Resolve error meaning
+
+    # Resolve error meaning with brown-red color
     local ret_val=""
     local plain_ret=""
     if [[ $exit_status -ne 0 ]]; then
         local meaning=$(get_error_meaning $exit_status)
-        ret_val=" %F{#ff5555}[$exit_status: $meaning]%f"
+        ret_val=" %F{#d26946}[$exit_status: $meaning]%f"
         plain_ret=" [$exit_status: $meaning]"
     fi
 
+    # Strip color codes for length calculation
+    local plain_git=$(echo -n "$git_info" | sed -E 's/%[FK]\{[^}]+\}//g; s/%[fk]//g')
+
     # Calculate exact padding for line 1
-    # Account for "╭ " (2 chars) and exit code if any
+    # Account for "╭ " (2 chars) and spacing between git and time (4 spaces)
     local raw_left_info="${(%):- ╭  %~ %n@%m $plain_ret }"
     local left_len=${#raw_left_info}
     local term_width=$COLUMNS
-    local padding_len=$((term_width - left_len - 9)) # -9 for HH:MM:SS
-    local padding=""
-    if [ $padding_len -gt 0 ]; then
-        printf -v padding '%*s' $padding_len ""
-    fi
+    local padding_len=$((term_width - left_len - ${#plain_git} - 9 - 6)) # -9 for HH:MM:SS, -6 for spacing
 
-    local left_info="${pipe_color}╭%f%K{#282a36} %F{#8be9fd}%~ %F{#bd93f9}%n@%m%f$ret_val "
+    # Split padding for gradient distribution across 3 sections
+    local pad_per_step=$((padding_len / 3))
+    local pad_remainder=$((padding_len % 3))
+    local pad5="" pad6="" pad7=""
+    [[ $pad_per_step -gt 0 ]] && printf -v pad5 "%${pad_per_step}s" " "
+    [[ $pad_per_step -gt 0 ]] && printf -v pad6 "%${pad_per_step}s" " "
+    [[ $((pad_per_step + pad_remainder)) -gt 0 ]] && printf -v pad7 "%$((pad_per_step + pad_remainder))s" " "
 
-    # Line 1: [Path User [Exit: MEANING] ... Time]
-    # Line 2: [$ ... Git]
-    PROMPT="${left_info}${padding}${time_str} %k
+    # High-resolution Dracula purple-to-pink gradient background (8 steps)
+    local bg1="%K{#4b465f}"  # Step 1: Desaturated purple
+    local bg2="%K{#4f465d}"  # Step 2
+    local bg3="%K{#53465c}"  # Step 3
+    local bg4="%K{#57465b}"  # Step 4
+    local bg5="%K{#5b465a}"  # Step 5
+    local bg6="%K{#5f465a}"  # Step 6
+    local bg7="%K{#62465a}"  # Step 7
+    local bg8="%K{#64465a}"  # Step 8: Desaturated pink
+
+    # Different Dracula accent colors for each element
+    local fg_path="%F{#bd93f9}"    # Dracula purple - path
+    local fg_user="%F{#8be9fd}"    # Dracula cyan - username
+    local fg_at="%F{#a0a0a0}"      # Light gray separator - @
+    local fg_host="%F{#ff79c6}"    # Dracula pink - hostname
+    local fg_time="%F{#b4c8ff}"    # Light blue - timestamp
+
+    # Line 1: gradient background with colorful text
+    PROMPT="${pipe_color}╭%f ${bg1}${fg_path}%~%f ${bg2}${fg_user}%n${bg3}${fg_at}@${bg4}${fg_host}%m%f${ret_val}${bg5}${pad5}${bg6}${pad6}${bg7}${pad7}${git_info}    ${bg8}${fg_time}${time_str} %k%f
 ${pipe_color}╰%f %F{#50fa7b}%(!.#.$)%f "
-    
-    # RPROMPT ensures Git info stays safely on the right without manual padding logic
-    RPROMPT="$git_info"
+
+    RPROMPT=""
 }
 
 # Ensure prompt variables are updated before drawing

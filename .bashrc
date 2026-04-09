@@ -61,7 +61,7 @@ set_ps1() {
   local plain_ret=""
   if [[ $exit_status -ne 0 ]]; then
     local meaning=$(get_error_meaning $exit_status)
-    ret_val=" \[\033[38;2;255;85;85m\][$exit_status: $meaning]"
+    ret_val=" \[\033[38;2;210;105;70m\][$exit_status: $meaning]"
     plain_ret=" [$exit_status: $meaning]"
   fi
 
@@ -79,7 +79,34 @@ set_ps1() {
   local pad1=""
   [[ $line1_pad -gt 0 ]] && printf -v pad1 "%${line1_pad}s" " "
 
-  local line1="${pipe_c}╭ \[\033[0m\]\[\033[48;2;40;42;54m\]${path_text} ${USER}@${host_short}${ret_val}${pad1}${git_info}    \[\033[38;2;139;233;253m\]$time_str \[\033[0m\]"
+  # High-resolution Dracula purple-to-pink gradient background
+  # Smooth transition with 8 steps
+  local bg1="\[\033[48;2;75;70;95m\]"     # Step 1: Desaturated purple
+  local bg2="\[\033[48;2;79;70;93m\]"     # Step 2
+  local bg3="\[\033[48;2;83;70;92m\]"     # Step 3
+  local bg4="\[\033[48;2;87;70;91m\]"     # Step 4
+  local bg5="\[\033[48;2;91;70;90m\]"     # Step 5
+  local bg6="\[\033[48;2;95;70;90m\]"     # Step 6
+  local bg7="\[\033[48;2;98;70;90m\]"     # Step 7
+  local bg8="\[\033[48;2;100;70;90m\]"    # Step 8: Desaturated pink
+  local fg_white="\[\033[38;2;248;248;242m\]"  # Dracula foreground - high contrast
+
+  # Different Dracula accent colors for each element (similar variety as git info)
+  local fg_path="\[\033[38;2;189;147;249m\]"    # Dracula purple - path
+  local fg_user="\[\033[38;2;139;233;253m\]"    # Dracula cyan - username
+  local fg_at="\[\033[38;2;160;160;160m\]"       # Light gray separator - @
+  local fg_host="\[\033[38;2;255;121;198m\]"    # Dracula pink - hostname
+  local fg_time="\[\033[38;2;180;200;255m\]"    # Light blue - timestamp
+
+  # Split padding for gradient distribution across 3 sections
+  local pad_per_step=$((line1_pad / 3))
+  local pad_remainder=$((line1_pad % 3))
+  local pad5="" pad6="" pad7=""
+  [[ $pad_per_step -gt 0 ]] && printf -v pad5 "%${pad_per_step}s" " "
+  [[ $pad_per_step -gt 0 ]] && printf -v pad6 "%${pad_per_step}s" " "
+  [[ $((pad_per_step + pad_remainder)) -gt 0 ]] && printf -v pad7 "%$((pad_per_step + pad_remainder))s" " "
+
+  local line1="${pipe_c}╭ ${bg1}${fg_path}${path_text} ${bg2}${fg_user}${USER}${bg3}${fg_at}@${bg4}${fg_host}${host_short}${ret_val}${bg5}${pad5}${bg6}${pad6}${bg7}${pad7}${git_info}    ${bg8}${fg_time}$time_str \[\033[0m\]"
   local line2="${pipe_c}╰\[\033[0m\] \[\033[38;2;80;250;123m\]\$\[\033[0m\] "
   
   PS1="${line1}\n${line2}"
