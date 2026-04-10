@@ -70,7 +70,7 @@ set_prompt() {
 
     # Calculate exact padding for line 1
     # Account for "╭ " (2 chars) and spacing between git and time (4 spaces)
-    local raw_left_info="${(%):- ╭  %~ %n@%m $plain_ret }"
+    local raw_left_info="${(%):- ╭  %n@%m %~ $plain_ret }"
     local left_len=${#raw_left_info}
     local term_width=$COLUMNS
     local padding_len=$((term_width - left_len - ${#plain_git} - 9 - 6)) # -9 for HH:MM:SS, -6 for spacing
@@ -101,7 +101,7 @@ set_prompt() {
     local fg_time="%F{#b4c8ff}"    # Light blue - timestamp
 
     # Line 1: gradient background with colorful text
-    PROMPT="${pipe_color}╭%f ${bg1}${fg_path}%~%f ${bg2}${fg_user}%n${bg3}${fg_at}@${bg4}${fg_host}%m%f${ret_val}${bg5}${pad5}${bg6}${pad6}${bg7}${pad7}${git_info}    ${bg8}${fg_time}${time_str} %k%f
+    PROMPT="${pipe_color}╭%f ${bg1}${fg_user}%n${bg2}${fg_at}@${bg3}${fg_host}%m ${bg4}${fg_path}%~%f${ret_val}${bg5}${pad5}${bg6}${pad6}${bg7}${pad7}${git_info}    ${bg8}${fg_time}${time_str} %k%f
 ${pipe_color}╰%f %F{#50fa7b}%(!.#.$)%f "
 
     RPROMPT=""

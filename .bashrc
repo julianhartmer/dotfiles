@@ -70,8 +70,8 @@ set_ps1() {
   local host_short="${HOSTNAME%%.*}"
   # Strip ANSI codes for accurate length calculation
   local plain_path=$(echo -e "$path_text" | sed -E 's/\x1b\[[0-9;]*m//g')
-  # Account for "╭ " (2 chars) + space after path + space before user
-  local left_text="╭  ${plain_path} ${USER}@${host_short}${plain_ret} "
+  # Account for "╭ " (2 chars) + user@host first, then path
+  local left_text="╭  ${USER}@${host_short} ${plain_path}${plain_ret} "
 
   # Line1: path + user@host + error + git + spacing + time
   # Account for extra spacing (4 spaces) between git and time
@@ -106,7 +106,7 @@ set_ps1() {
   [[ $pad_per_step -gt 0 ]] && printf -v pad6 "%${pad_per_step}s" " "
   [[ $((pad_per_step + pad_remainder)) -gt 0 ]] && printf -v pad7 "%$((pad_per_step + pad_remainder))s" " "
 
-  local line1="${pipe_c}╭ ${bg1}${fg_path}${path_text} ${bg2}${fg_user}${USER}${bg3}${fg_at}@${bg4}${fg_host}${host_short}${ret_val}${bg5}${pad5}${bg6}${pad6}${bg7}${pad7}${git_info}    ${bg8}${fg_time}$time_str \[\033[0m\]"
+  local line1="${pipe_c}╭ ${bg1}${fg_user}${USER}${bg2}${fg_at}@${bg3}${fg_host}${host_short} ${bg4}${fg_path}${path_text}${ret_val}${bg5}${pad5}${bg6}${pad6}${bg7}${pad7}${git_info}    ${bg8}${fg_time}$time_str \[\033[0m\]"
   local line2="${pipe_c}╰\[\033[0m\] \[\033[38;2;80;250;123m\]\$\[\033[0m\] "
   
   PS1="${line1}\n${line2}"
