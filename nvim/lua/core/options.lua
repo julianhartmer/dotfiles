@@ -20,6 +20,7 @@ opt.smartcase = true
 opt.termguicolors = true
 opt.background = "dark"
 opt.signcolumn = "yes"
+opt.conceallevel = 1 -- enables Obsidian.nvim syntax features (links, checkboxes, etc.)
 
 -- Behavior
 opt.mouse = "a"

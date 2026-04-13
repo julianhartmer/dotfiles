@@ -14,7 +14,6 @@ Your customized, unified workflow for Tmux and Neovim.
 ### 🌿 Git Prompt Status
 | Symbol | Meaning |
 | :--- | :--- |
-| `[a1b2c3d]` | Current Commit Hash (Purple) |
 | `#v1.0` | Current Tag (Pink) |
 | `✗` | Unstaged changes |
 | `+` | Staged changes |
@@ -73,3 +72,16 @@ Your customized, unified workflow for Tmux and Neovim.
 | `<Space> + ca` | Code Actions / Fixes |
 | `<Space> + rn` | Rename Symbol |
 | **Autocomplete:** | `Ctrl + j` / `k` (Navigate), `Enter` (Confirm) |
+
+### 📓 Obsidian (Notes)
+| Shortcut | Action |
+| :--- | :--- |
+| `<Space> + oo` | Open **today's** daily note |
+| `<Space> + oy` | Open **yesterday's** daily note |
+| `<Space> + os` | **Search** notes (full-text grep) |
+| `<Space> + oq` | **Quick switch** (fuzzy find by title) |
+| `<Space> + on` | **New** note |
+| `<Space> + ot` | Insert **template** |
+| `<Space> + ob` | Show **backlinks** to current note |
+| `<Space> + ol` | Show **links** in current note |
+| `<Space> + of` | **Follow** link under cursor |

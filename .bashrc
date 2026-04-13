@@ -6,24 +6,22 @@ get_git_info() {
   local status_out
   status_out=$(git status --porcelain=v2 --branch --untracked-files=no 2>/dev/null) || return
 
-  local branch="" hash="" tag="" status_info=""
+  local branch="" tag="" status_info=""
   while IFS= read -r line; do
     if [[ $line == "# branch.head "* ]]; then
       branch="${line#*head }"
-    elif [[ $line == "# branch.oid "* ]]; then
-      hash="${line:13:7}"
     elif [[ $line == "1 "* ]] || [[ $line == "2 "* ]]; then
       status_info=" ✗"
     fi
   done <<< "$status_out"
 
-  if [[ -n "$hash" ]]; then
+  if [[ -n "$branch" ]]; then
     tag=$(git describe --tags --exact-match 2>/dev/null)
     # MUST wrap colors in \[ and \] for Bash readline!
     [[ -n "$tag" ]] && tag=" \[\033[38;2;255;121;198m\]#$tag"
   fi
 
-  local git_string=" \[\033[38;2;98;114;164m\][\[\033[38;2;255;121;198m\]$branch \[\033[38;2;189;147;249m\]$hash$tag\[\033[38;2;241;250;140m\]$status_info\[\033[38;2;98;114;164m\]]"
+  local git_string=" \[\033[38;2;98;114;164m\][\[\033[38;2;255;121;198m\]$branch$tag\[\033[38;2;241;250;140m\]$status_info\[\033[38;2;98;114;164m\]]"
   echo -e "$git_string"
 }
 
