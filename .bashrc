@@ -71,9 +71,8 @@ set_ps1() {
   # Account for "╭ " (2 chars) + user@host first, then path
   local left_text="╭  ${USER}@${host_short} ${plain_path}${plain_ret} "
 
-  # Line1: path + user@host + error + git + spacing + time
-  # Account for extra spacing (4 spaces) between git and time
-  local line1_pad=$((cols - ${#left_text} - ${#plain_git} - ${#time_str} - 6))
+  # Line1: path + user@host + error + git + time (no gap between git and time)
+  local line1_pad=$((cols - ${#left_text} - ${#plain_git} - ${#time_str} - 3))
   local pad1=""
   [[ $line1_pad -gt 0 ]] && printf -v pad1 "%${line1_pad}s" " "
 
@@ -104,7 +103,7 @@ set_ps1() {
   [[ $pad_per_step -gt 0 ]] && printf -v pad6 "%${pad_per_step}s" " "
   [[ $((pad_per_step + pad_remainder)) -gt 0 ]] && printf -v pad7 "%$((pad_per_step + pad_remainder))s" " "
 
-  local line1="${pipe_c}╭ ${bg1}${fg_user}${USER}${bg2}${fg_at}@${bg3}${fg_host}${host_short} ${bg4}${fg_path}${path_text}${ret_val}${bg5}${pad5}${bg6}${pad6}${bg7}${pad7}${git_info}    ${bg8}${fg_time}$time_str \[\033[0m\]"
+  local line1="${pipe_c}╭ ${bg1}${fg_user}${USER}${bg2}${fg_at}@${bg3}${fg_host}${host_short} ${bg4}${fg_path}${path_text}${ret_val}${bg5}${pad5}${bg6}${pad6}${bg7}${pad7}${git_info} ${bg8}${fg_time}$time_str \[\033[0m\]"
   local line2="${pipe_c}╰\[\033[0m\] \[\033[38;2;80;250;123m\]\$\[\033[0m\] "
   
   PS1="${line1}\n${line2}"
