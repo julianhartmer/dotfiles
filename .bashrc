@@ -121,4 +121,5 @@ alias t='tmux'
 alias ta='tmux attach'
 alias v='nvim'
 alias n='nvim'
+alias wt='wezterm'
 # --- SHARED DOTFILE CFG END ---
