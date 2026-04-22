@@ -11,6 +11,10 @@ keymap.set("n", "<leader>x", "<C-w>s", { desc = "Split window horizontally" })
 keymap.set("n", "<leader>se", "<C-w>=", { desc = "Make splits equal size" })
 keymap.set("n", "<leader>q", "<cmd>close<CR>", { desc = "Close current split" })
 
+-- Buffer navigation
+keymap.set("n", "<Tab>", "<cmd>bnext<CR>", { desc = "Next buffer" })
+keymap.set("n", "<S-Tab>", "<cmd>bprev<CR>", { desc = "Previous buffer" })
+
 -- General
 keymap.set("n", "<leader>w", "<cmd>w<CR>", { desc = "Save file" })
 keymap.set("n", "<leader>c", "<cmd>bd<CR>", { desc = "Close current buffer" })

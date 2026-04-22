@@ -1,0 +1,23 @@
+# --- MAC OS SPECIFIC ZSH CFG ---
+# .zshrc_mac
+
+# Homebrew path for Apple Silicon
+if [[ -f /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+# Source the shared config if it exists
+if [[ -f ~/.zshrc_shared ]]; then
+  source ~/.zshrc_shared
+fi
+
+# macOS Specific Aliases
+alias brewup='brew update && brew upgrade && brew cleanup'
+alias flushdns='sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder'
+
+# Use GNU coreutils if installed via brew (prefixed with 'g')
+if command -v gls >/dev/null 2>&1; then
+  alias ls='gls --color=auto -F'
+else
+  alias ls='ls -GF'
+fi

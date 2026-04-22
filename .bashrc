@@ -1,6 +1,10 @@
 # --- SHARED DOTFILE CFG START ---
 # .bashrc
 
+# Ensure UTF-8 locale
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
 # Faster Git Status (Optimized for 2026)
 get_git_info() {
   local status_out

@@ -21,12 +21,12 @@ return {
     workspaces = {
       {
         name = "work",
-        path = "~/notes/"
+        path = os.getenv("OBSIDIAN_VAULT") or "~/notes/"
       },
     },
 
     templates = {
-        folder = "_Templates",
+        folder = os.getenv("OBSIDIAN_TEMPLATES") or "_Templates",
         date_format = "%Y-%m-%d-%a",
         time_format = "%H:%M",
     },
