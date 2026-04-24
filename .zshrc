@@ -125,6 +125,9 @@ alias ta='tmux attach'
 alias v='nvim'
 alias n='nvim'
 
+# Add ~/.bin to PATH for custom binaries (nvdc, etc.)
+export PATH="$HOME/.bin:$PATH"
+
 # Make completions use the same colors
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 # --- SHARED DOTFILE CFG END ---

@@ -152,3 +152,29 @@ if [ -f "$DCONF_FILE" ] && command -v dconf >/dev/null 2>&1; then
 else
     echo "Warning: dconf file not found or dconf command missing. Skipping extension settings."
 fi
+
+# 10. Install Rust (if not already installed) and build nvdc
+echo "Installing nvdc..."
+mkdir -p "$HOME/.bin"
+
+if ! command -v cargo >/dev/null 2>&1; then
+    echo "Rust not found. Installing via rustup..."
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    source "$HOME/.cargo/env"
+fi
+
+NVDC_SOURCE="$DOTFILES_DIR/nvdc"
+if [ -d "$NVDC_SOURCE" ]; then
+    echo "Building nvdc from source..."
+    (cd "$NVDC_SOURCE" && cargo build --release)
+    if [ $? -eq 0 ]; then
+        rm -f "$HOME/.bin/nvdc"
+        cp "$NVDC_SOURCE/target/release/nvdc" "$HOME/.bin/nvdc"
+        chmod +x "$HOME/.bin/nvdc"
+        echo "Successfully installed nvdc to ~/.bin/nvdc"
+    else
+        echo "Error: Failed to build nvdc."
+    fi
+else
+    echo "Warning: nvdc source directory not found at $NVDC_SOURCE"
+fi

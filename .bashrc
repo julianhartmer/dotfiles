@@ -125,4 +125,7 @@ alias ta='tmux attach'
 alias v='nvim'
 alias n='nvim'
 alias wt='wezterm'
+
+# Add ~/.bin to PATH for custom binaries (nvdc, etc.)
+export PATH="$HOME/.bin:$PATH"
 # --- SHARED DOTFILE CFG END ---

@@ -1,0 +1,35 @@
+name: nvdc
+
+on:
+  push:
+    paths:
+      - 'nvdc/**'
+  pull_request:
+    paths:
+      - 'nvdc/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo registry & build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            nvdc/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('nvdc/Cargo.lock') }}
+
+      - name: Build
+        working-directory: nvdc
+        run: cargo build --release
+
+      - name: Check warnings
+        working-directory: nvdc
+        run: cargo clippy -- -D warnings
