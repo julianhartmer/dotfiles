@@ -35,17 +35,6 @@ impl NvimMountOptions {
                 })
         }
     }
-
-    /// Resolve the neovim data directory path.
-    pub fn data_path(&self) -> PathBuf {
-        dirs::data_local_dir()
-            .map(|d| d.join("nvim"))
-            .unwrap_or_else(|| {
-                dirs::home_dir()
-                    .map(|h| h.join(".local/share/nvim"))
-                    .expect("Could not determine home directory")
-            })
-    }
 }
 
 fn expand_tilde(path: &std::path::Path) -> PathBuf {

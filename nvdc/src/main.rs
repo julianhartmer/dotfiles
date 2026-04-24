@@ -141,42 +141,25 @@ fn cmd_launch(opts: &RunOptions) -> Result<()> {
     }
 
     let nvim_opts = nvim::NvimMountOptions::from_run_options(opts);
-    let container_name = docker::container_name(&opts.project_dir, &dc.name);
-
-    // Check if container is already running
-    if docker::is_running(&container_name, opts.dry_run)? {
-        eprintln!("Container '{}' is already running, attaching...", container_name);
-        return docker::exec_nvim(&container_name, &dc, opts);
-    }
-
-    // Build
-    docker::build(&dc, opts)?;
-
-    // Run
-    docker::run(&dc, &nvim_opts, opts)?;
+    
+    // Official 'devcontainer up' handles building and running
+    let container_id = docker::up(&dc, &nvim_opts, opts)?;
 
     // Save state
-    config::save_state(&opts.project_dir, &container_name)?;
+    config::save_state(&opts.project_dir, &container_id)?;
 
     // Attach with nvim
-    docker::exec_nvim(&container_name, &dc, opts)
+    docker::exec_nvim(&container_id, &dc, opts)
 }
 
 fn cmd_up(opts: &RunOptions) -> Result<()> {
     let dc = resolve_config(opts)?;
     let nvim_opts = nvim::NvimMountOptions::from_run_options(opts);
-    let container_name = docker::container_name(&opts.project_dir, &dc.name);
 
-    if docker::is_running(&container_name, opts.dry_run)? {
-        eprintln!("Container '{}' is already running.", container_name);
-        return Ok(());
-    }
+    let container_id = docker::up(&dc, &nvim_opts, opts)?;
+    config::save_state(&opts.project_dir, &container_id)?;
 
-    docker::build(&dc, opts)?;
-    docker::run(&dc, &nvim_opts, opts)?;
-    config::save_state(&opts.project_dir, &container_name)?;
-
-    eprintln!("Container '{}' started.", container_name);
+    eprintln!("Container '{}' started.", container_id);
     Ok(())
 }
 
